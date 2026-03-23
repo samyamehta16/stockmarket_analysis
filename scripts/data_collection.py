@@ -38,7 +38,7 @@ sp500 = sp500.sort_values('date').reset_index(drop=True)
 #basic description and stats printed
 print(f'\nShape        : {sp500.shape}')
 print(f"Date range   : {sp500['date'].min().date()} → {sp500['date'].max().date()}")
-print(f'Missing values: {sp500['price'].isna().sum()}')
+print(f"Missing values: {sp500['price'].isna().sum()}")
 print('\nFirst 5 rows:')
 print(sp500.head())
 print('\nLast 5 rows:')
