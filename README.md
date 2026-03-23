@@ -14,6 +14,9 @@ This project collects historical S&P 500 data from FRED (Federal Reserve Economi
 - Saves raw data to `data/sp500_raw.csv`
 - Run: `python scripts/data_collection.py`
 
+<img width="971" height="839" alt="image" src="https://github.com/user-attachments/assets/72bc4074-4491-4188-9cff-f9239a8b5765" />
+
+
 ### 2. Preprocessing of Data
 
 - Handles missing values
@@ -21,6 +24,11 @@ This project collects historical S&P 500 data from FRED (Federal Reserve Economi
 - Calculates daily returns, moving averages, volatility, Bollinger Bands
 - Saves processed data to `data/sp500_processed.csv`
 - Run: `python scripts/data_preprocessing.py`
+
+<img width="1485" height="474" alt="image" src="https://github.com/user-attachments/assets/861a7270-65ed-492e-bc82-feff6d9651c0" />
+
+<img width="1470" height="861" alt="image" src="https://github.com/user-attachments/assets/d87eb61f-76d0-49b6-9178-6883ffe8151f" />
+
 
 ## Requirements
 
