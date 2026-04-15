@@ -6,11 +6,9 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 from prophet import Prophet
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.inspection import permutation_importance
 
-warnings.filterwarnings("ignore")
 os.makedirs("plots", exist_ok=True)
 os.makedirs("data",  exist_ok=True)
 

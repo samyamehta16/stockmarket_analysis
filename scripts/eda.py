@@ -19,15 +19,10 @@ import seaborn as sns
 from scipy import stats
 from scipy.ndimage import uniform_filter1d
 
-warnings.filterwarnings("ignore")
 
 # Create output folder for plots
 os.makedirs("plots", exist_ok=True)
 
-
-# =============================================================================
-# CONFIGURATION — Colors & Chart Style
-# =============================================================================
 
 NAVY  = "#1A2B4A"   # titles, axes
 TEAL  = "#0E9F8E"   # primary line color
@@ -55,19 +50,10 @@ plt.rcParams.update({
 })
 
 
-# =============================================================================
-# HELPER — Save chart to /plots folder
-# =============================================================================
-
 def save(filename):
     plt.savefig(f"plots/{filename}", dpi=150, bbox_inches="tight", facecolor=BG)
     plt.close()
     print(f"  Saved → plots/{filename}")
-
-
-# =============================================================================
-# LOAD DATA
-# =============================================================================
 
 print("Loading processed data...")
 df = pd.read_csv("data/sp500_processed.csv", parse_dates=["date"])
@@ -75,9 +61,7 @@ df = df.sort_values("date").reset_index(drop=True)
 print(f"Rows: {len(df)}  |  Range: {df['date'].min().date()} → {df['date'].max().date()}")
 
 
-# =============================================================================
 # PLOT 1 — Long-Term Price Trend with Moving Averages
-# =============================================================================
 
 print("\nPlot 1: Price trend with moving averages...")
 
@@ -97,11 +81,7 @@ ax.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 save("01_price_trend.png")
 
-
-# =============================================================================
 # PLOT 2 — Daily Returns Distribution
-# =============================================================================
-
 print("Plot 2: Daily returns distribution...")
 
 returns    = df["daily_return"].dropna()
@@ -128,10 +108,7 @@ plt.tight_layout()
 save("02_return_distribution.png")
 
 
-# =============================================================================
 # PLOT 3 — Rolling Volatility with Crisis Period Annotations
-# =============================================================================
-
 print("Plot 3: Rolling volatility with crisis annotations...")
 
 vol = df.dropna(subset=["volatility_30"])
@@ -166,10 +143,7 @@ plt.tight_layout()
 save("03_volatility.png")
 
 
-# =============================================================================
 # PLOT 4 — Monthly Seasonality (Average Daily Return by Month)
-# =============================================================================
-
 print("Plot 4: Monthly seasonality...")
 
 month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -208,10 +182,7 @@ plt.tight_layout()
 save("04_seasonality.png")
 
 
-# =============================================================================
 # PLOT 5 — Annual Cumulative Returns
-# =============================================================================
-
 print("Plot 5: Annual cumulative returns...")
 
 annual = (
@@ -239,10 +210,7 @@ plt.tight_layout()
 save("05_annual_returns.png")
 
 
-# =============================================================================
 # PLOT 6 — Bollinger Bands (Last 2 Years)
-# =============================================================================
-
 print("Plot 6: Bollinger Bands...")
 
 recent = df[
@@ -269,11 +237,7 @@ ax.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 save("06_bollinger_bands.png")
 
-
-# =============================================================================
 # PLOT 7 — Feature Correlation Heatmap
-# =============================================================================
-
 print("Plot 7: Correlation heatmap...")
 
 corr_cols = ["price", "daily_return", "volatility_30", "ma_30", "ma_200", "bb_width"]
@@ -296,11 +260,7 @@ ax.set_title("Feature Correlation Heatmap")
 plt.tight_layout()
 save("07_correlation_heatmap.png")
 
-
-# =============================================================================
 # EDA SUMMARY — Printed to terminal
-# =============================================================================
-
 print("\n" + "=" * 50)
 print("           EDA SUMMARY")
 print("=" * 50)

@@ -1,11 +1,3 @@
-# =============================================================================
-# 02_preprocessing.R
-# Stock Market Analysis & Forecasting
-# Step 2: Data Preprocessing & Feature Engineering
-# =============================================================================
-# install.packages(c("dplyr", "lubridate", "zoo"))
-# =============================================================================
-
 library(dplyr)
 library(lubridate)
 library(zoo)
@@ -25,7 +17,7 @@ cat(paste("Missing (raw):", sum(is.na(df$price)), "\n"))
 
 cat("\n--- Step 1: Handling Missing Values ---\n")
 
-df$price <- na.locf(df$price, na.rm = FALSE)   # forward fill
+df$price <- na.locf(df$price, na.rm = FALSE) # forward fill
 df <- df %>% filter(!is.na(price))
 
 cat(paste("Missing after fill:", sum(is.na(df$price)), "\n"))

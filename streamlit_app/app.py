@@ -11,14 +11,13 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-warnings.filterwarnings("ignore")
 load_dotenv()
 
 st.set_page_config(
     page_title="SP500 Forecasting",
     page_icon=None,
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide",   #is wide or center in the page
+    initial_sidebar_state="expanded",
 )
 
 BLACK      = "#0A0A0A"
@@ -78,7 +77,7 @@ st.markdown(f"""
     border: none !important;
     border-bottom: 2px solid transparent !important;
   }}
-  .stTabs [aria-selected="true"] {{
+  .stTabs [aria-selected="true"] {{   #if we select tab 
     color: {YELLOW} !important;
     border-bottom: 2px solid {YELLOW} !important;
     background-color: transparent !important;
@@ -88,7 +87,7 @@ st.markdown(f"""
     padding-top: 24px !important;
   }}
   .stDateInput input, .stNumberInput input, .stTextInput input, .stSelectbox div {{
-    background-color: {CARD} !important;
+    background-color: {CARD} !important;   #all input components
     color: {WHITE} !important;
     border: 1px solid {BORDER} !important;
     border-radius: 2px !important;
@@ -109,26 +108,26 @@ st.markdown(f"""
     background-color: {YELLOW} !important;
     color: {BLACK} !important;
   }}
-  .stRadio label, .stRadio div {{
+  .stRadio label, .stRadio div {{   #radio buttons
     font-family: {FONT} !important;
     color: {MUTED} !important;
     font-size: 11px !important;
     letter-spacing: 2px !important;
   }}
-  .stAlert, .stSuccess, .stInfo {{
+  .stAlert, .stSuccess, .stInfo {{   #message styles
     background-color: {CARD} !important;
     border-left: 3px solid {YELLOW} !important;
     font-family: {FONT} !important;
     color: {WHITE} !important;
   }}
   #MainMenu, footer, header {{ visibility: hidden; }}
-  .block-container {{ padding: 2rem 2.5rem !important; }}
+  .block-container {{ padding: 2rem 2.5rem !important; }}  #page spacing 
   ::-webkit-scrollbar {{ width: 4px; background: {DARK}; }}
   ::-webkit-scrollbar-thumb {{ background: {BORDER}; }}
 </style>
 """, unsafe_allow_html=True)
 
-def metric_card(label, value, delta=None, delta_good=True, accent=YELLOW):
+def metric_card(label, value, delta=None, delta_good=True, accent=YELLOW): #for metric cards on top 
     delta_html = ""
     if delta:
         c = GREEN if delta_good else RED
@@ -141,7 +140,7 @@ def metric_card(label, value, delta=None, delta_good=True, accent=YELLOW):
         {delta_html}
     </div>"""
 
-def section_title(text):
+def section_title(text):    #for each section title
     st.markdown(f"""
     <div style='margin:32px 0 14px 0;font-family:{FONT};'>
         <span style='color:{YELLOW};font-size:9px;letter-spacing:4px;'>// </span>
@@ -164,37 +163,37 @@ def chart_style(fig, height=380):
     )
     return fig
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=3600) #cache lasts for 1 hour so that api limit is not exceeded and also faster loading experience for users
 def fetch_live_data(start_date, end_date):
     api_key = os.getenv("FRED_API_KEY", None)
     df = pdr.DataReader("SP500", "fred", start=str(start_date),
                         end=str(end_date), api_key=api_key)
-    df.columns = ["price"]
-    df.index.name = "date"
-    df = df.reset_index()
+    df.columns = ["price"]  #cleaning data by renaming the column to price and converting date index to a column
+    df.index.name = "date"  
+    df = df.reset_index()   #converts date index to a column
     df["date"]  = pd.to_datetime(df["date"])
-    df["price"] = pd.to_numeric(df["price"], errors="coerce").fillna(method="ffill")
+    df["price"] = pd.to_numeric(df["price"], errors="coerce").fillna(method="ffill")  #with previous value
     return df.dropna().sort_values("date").reset_index(drop=True)
 
 @st.cache_data(ttl=3600)
 def engineer_features(df):
     df = df.copy()
-    df["daily_return"]  = df["price"].pct_change() * 100
-    df["log_return"]    = np.log(df["price"] / df["price"].shift(1)) * 100
-    df["ma_7"]          = df["price"].rolling(7,   min_periods=1).mean()
-    df["ma_30"]         = df["price"].rolling(30,  min_periods=1).mean()
-    df["ma_90"]         = df["price"].rolling(90,  min_periods=1).mean()
-    df["ma_200"]        = df["price"].rolling(200, min_periods=1).mean()
-    df["volatility_7"]  = df["daily_return"].rolling(7).std()
-    df["volatility_30"] = df["daily_return"].rolling(30).std()
+    df["daily_return"]  = df["price"].pct_change() * 100 #percentage change from previous day
+    df["log_return"]    = np.log(df["price"] / df["price"].shift(1)) * 100 #logarithmic return which is more stable and additive over time
+    df["ma_7"]          = df["price"].rolling(7,   min_periods=1).mean() #moving average over 7 days, min_periods=1 means it will calculate average even if there are less than 7 data points available (useful for the beginning of the series)
+    df["ma_30"]         = df["price"].rolling(30,  min_periods=1).mean() #helps to identify medium-term trends and smooth out short-term fluctuations
+    df["ma_90"]         = df["price"].rolling(90,  min_periods=1).mean() #helps to identify long-term trends and smooth out medium-term fluctuations
+    df["ma_200"]        = df["price"].rolling(200, min_periods=1).mean() #helps to identify very long-term trends and smooth out long-term fluctuations
+    df["volatility_7"]  = df["daily_return"].rolling(7).std()  #volatility is a measure of how much the price fluctuates over a certain period, sd of daily returns over that period
+    df["volatility_30"] = df["daily_return"].rolling(30).std() #rolling means a moving window calculation 
     df["volatility_90"] = df["daily_return"].rolling(90).std()
-    df["bb_mid"]        = df["price"].rolling(20).mean()
+    df["bb_mid"]        = df["price"].rolling(20).mean()  #Bollinger Bands are a volatility indicator that consists of a middle band (20-day moving average) and upper/lower bands that are typically 2 standard deviations away from the middle band. They help to identify overbought or oversold conditions in the market.
     df["bb_std"]        = df["price"].rolling(20).std()
     df["bb_upper"]      = df["bb_mid"] + 2 * df["bb_std"]
     df["bb_lower"]      = df["bb_mid"] - 2 * df["bb_std"]
     df["bb_width"]      = df["bb_upper"] - df["bb_lower"]
-    df["golden_cross"]  = (df["ma_30"] > df["ma_200"]).astype(int)
-    df["month_name"]    = df["date"].dt.strftime("%b")
+    df["golden_cross"]  = (df["ma_30"] > df["ma_200"]).astype(int) #golden cross is a bullish signal that occurs when a shorter-term moving average (like the 30-day) crosses above a longer-term moving average (like the 200-day). It suggests that the market may be shifting from a downtrend to an uptrend, indicating potential buying opportunities.
+    df["month_name"]    = df["date"].dt.strftime("%b")  #data to string n extract month
     df["year"]          = df["date"].dt.year
     df["cumulative_return"] = (df["price"] / df["price"].iloc[0] - 1) * 100
     return df
@@ -215,8 +214,8 @@ def run_hybrid_model(df, forecast_days=30):
 
     m = Prophet(yearly_seasonality=True, weekly_seasonality=True,
                 daily_seasonality=False, seasonality_mode="multiplicative",
-                changepoint_prior_scale=0.05, interval_width=0.95)
-    m.add_seasonality(name="monthly", period=30.5, fourier_order=5)
+                changepoint_prior_scale=0.05, interval_width=0.95) #trend flixibility
+    m.add_seasonality(name="monthly", period=30.5, fourier_order=5) #balanced complexity
     m.fit(pt)
 
     pred = m.predict(pf[["ds"]])
@@ -295,9 +294,7 @@ with st.sidebar:
         <div style='color:{MUTED};font-size:10px;'>60 minutes</div>
     </div>""", unsafe_allow_html=True)
 
-# =============================================================================
-# HEADER
-# =============================================================================
+#header
 st.markdown(f"""
 <div style='font-family:{FONT};border-bottom:1px solid {BORDER};padding-bottom:20px;margin-bottom:4px;'>
     <div style='color:{YELLOW};font-size:9px;letter-spacing:6px;text-transform:uppercase;margin-bottom:8px;'>
@@ -311,9 +308,7 @@ st.markdown(f"""
     </div>
 </div>""", unsafe_allow_html=True)
 
-# =============================================================================
-# LOAD DATA
-# =============================================================================
+#loading data
 if "df_full" not in st.session_state or run_btn:
     with st.spinner("CONNECTING TO FRED..."):
         raw = fetch_live_data(start_date, end_date)
@@ -334,14 +329,10 @@ else:
     metrics   = st.session_state["metrics"]
     n_train   = st.session_state["n_train"]
 
-# =============================================================================
-# TABS
-# =============================================================================
+#tabs
 tab1, tab2 = st.tabs(["  MARKET OVERVIEW  ", "  ANALYST VIEW  "])
 
-# ─────────────────────────────────────────────────────────────────────────────
-# TAB 1 — GENERAL USER
-# ─────────────────────────────────────────────────────────────────────────────
+#Tab 1 — GENERAL USER
 with tab1:
     latest = df_full["price"].iloc[-1]
     prev   = df_full["price"].iloc[-2]
@@ -465,9 +456,7 @@ with tab1:
     fig3.update_yaxes(ticksuffix="%")
     st.plotly_chart(fig3, use_container_width=True)
 
-# ─────────────────────────────────────────────────────────────────────────────
-# TAB 2 — ANALYST VIEW
-# ─────────────────────────────────────────────────────────────────────────────
+#tab 2 — ANALYST VIEW
 with tab2:
 
     section_title("MODEL PERFORMANCE METRICS")
