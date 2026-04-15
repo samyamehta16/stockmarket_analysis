@@ -83,8 +83,12 @@ streamlit run app.py
   * Volatility analysis
   * Moving averages comparison
   * KPI summaries
+    
+* User View:
+<img width="1879" height="1057" alt="image" src="https://github.com/user-attachments/assets/11b850c6-26d0-449b-b88d-430c994d7bda" />
 
-*(Add your Power BI dashboard screenshots here)*
+* Analyst View:
+<img width="1902" height="1053" alt="image" src="https://github.com/user-attachments/assets/6a14e69f-cdcb-4140-a602-53bac26f51d0" />
 
 ---
 
