@@ -1,11 +1,3 @@
-# =============================================================================
-# powerbi/refresh_data.py
-# Refresh all CSVs that Power BI reads from — run this to update dashboards
-# Schedule this with Windows Task Scheduler for automatic daily refresh
-# =============================================================================
-# pip install pandas numpy prophet scikit-learn pandas-datareader python-dotenv
-# =============================================================================
-
 import os
 import warnings
 import numpy as np
@@ -26,9 +18,7 @@ FRED_API_KEY = os.getenv("FRED_API_KEY", None)
 
 print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M')}] Starting Power BI data refresh...")
 
-# =============================================================================
-# 1. FETCH LIVE DATA
-# =============================================================================
+#fetching data 
 print("Fetching live S&P 500 from FRED...")
 raw = pdr.DataReader("SP500", "fred",
                      start="1990-01-01",
@@ -42,9 +32,7 @@ raw["price"] = pd.to_numeric(raw["price"], errors="coerce").fillna(method="ffill
 raw = raw.dropna().sort_values("date").reset_index(drop=True)
 print(f"  Fetched {len(raw)} rows up to {raw['date'].max().date()}")
 
-# =============================================================================
-# 2. FEATURE ENGINEERING
-# =============================================================================
+#  FEATURE ENGINEERING
 df = raw.copy()
 df["daily_return"]  = df["price"].pct_change() * 100
 df["log_return"]    = np.log(df["price"] / df["price"].shift(1)) * 100
@@ -77,9 +65,8 @@ elif latest["ma_30"] < latest["ma_200"] * 0.98:
 else:
     df["market_mood"] = "Neutral"
 
-# =============================================================================
+
 # 3. HYBRID MODEL
-# =============================================================================
 print("Running Hybrid Model...")
 
 FEATURE_COLS = [
@@ -115,7 +102,7 @@ df_model["residual"]      = df_model["price"] - df_model["prophet_pred"]
 train_df = df_model.iloc[:n_train].copy()
 test_df  = df_model.iloc[n_train:].copy()
 
-# Random Forest
+
 rf = RandomForestRegressor(n_estimators=300, max_depth=6,
                            min_samples_leaf=10, max_features="sqrt",
                            random_state=42, n_jobs=-1)
@@ -134,7 +121,7 @@ mae  = float(np.mean(np.abs(actual - predicted)))
 mape = float(np.mean(np.abs((actual - predicted) / actual)) * 100)
 r2   = float(1 - np.sum((actual-predicted)**2) / np.sum((actual-actual.mean())**2))
 
-# Future forecast (30 business days)
+# Future forecast
 last_date    = df_model["date"].max()
 future_dates = pd.date_range(start=last_date + timedelta(days=1), periods=30, freq="B")
 future_input = pd.DataFrame({"ds": future_dates})
@@ -150,7 +137,7 @@ future_df = pd.DataFrame({
     "type"    : "Forecast"
 })
 
-# Feature importance
+
 feat_imp = pd.DataFrame({
     "feature"   : FEATURE_COLS,
     "importance": rf.feature_importances_
@@ -183,7 +170,7 @@ metrics_df = pd.DataFrame([{
     "data_end_date": str(last_date.date()),
 }])
 
-# KPI summary (single row — Power BI card visuals read this)
+# KPI summary 
 kpis = pd.DataFrame([{
     "current_price"  : round(float(df["price"].iloc[-1]), 2),
     "price_change"   : round(float(df["price"].iloc[-1] - df["price"].iloc[-2]), 2),
@@ -197,9 +184,7 @@ kpis = pd.DataFrame([{
     "last_updated"   : datetime.now().strftime("%Y-%m-%d %H:%M"),
 }])
 
-# =============================================================================
-# 4. SAVE ALL CSVs FOR POWER BI
-# =============================================================================
+
 files = {
     "sp500_prices.csv"          : df[["date","price","ma_7","ma_30","ma_90","ma_200",
                                        "daily_return","volatility_30","bb_upper",
