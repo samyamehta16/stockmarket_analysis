@@ -329,9 +329,7 @@ metrics_df.to_csv("data/model_metrics.csv", index=False)
 
 #Final summary 
 print("\n")
-print("=" * 56)
 print("HYBRID MODEL — FINAL SUMMARY")
-print("=" * 56)
 print(f"  Architecture   : Prophet + Random Forest (Residual)")
 print(f"  Features used  : {len(FEATURE_COLS)} technical indicators")
 print(f"  RF Trees       : 300  |  Max Depth: 6")
@@ -346,4 +344,3 @@ print(f"    RMSE: {metrics_hybrid['RMSE']:,.2f}  |  MAPE: {metrics_hybrid['MAPE'
 print()
 print(f"  RMSE improvement : {metrics_prophet['RMSE'] - metrics_hybrid['RMSE']:,.2f}")
 print(f"  MAPE improvement : {metrics_prophet['MAPE'] - metrics_hybrid['MAPE']:.2f}%")
-print("=" * 56)

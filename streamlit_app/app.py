@@ -30,23 +30,27 @@ WHITE      = "#F0F0F0"
 MUTED      = "#666666"
 GREEN      = "#39FF14"
 RED        = "#FF4444"
-FONT       = "'Courier New', Courier, monospace"
+FONT       = "'Courier New', Courier, monospace, 'Material Icons Extended', 'Material Icons'"
 
 st.markdown(f"""
 <style>
-  html, body, [class*="css"], .stApp {{
+  html, body, .stApp {{
     background-color: {BLACK} !important;
     color: {WHITE} !important;
     font-family: {FONT} !important;
+  }}
+  material-icons,
+  [class*="material-icons"] {{
+    font-family: "Material Icons" !important;
   }}
   section[data-testid="stSidebar"] {{
     background-color: {DARK} !important;
     border-right: 1px solid {BORDER} !important;
   }}
-  section[data-testid="stSidebar"] * {{
-    font-family: {FONT} !important;
-    color: {WHITE} !important;
-  }}
+  section[data-testid="stSidebar"] *:not([class*="material-icons"]) {{
+  font-family: {FONT} !important;
+  color: {WHITE} !important;
+  }}  
   section[data-testid="stSidebar"] .stButton > button {{
     background-color: {YELLOW} !important;
     color: {BLACK} !important;
@@ -77,7 +81,7 @@ st.markdown(f"""
     border: none !important;
     border-bottom: 2px solid transparent !important;
   }}
-  .stTabs [aria-selected="true"] {{   #if we select tab 
+  .stTabs [aria-selected="true"] {{
     color: {YELLOW} !important;
     border-bottom: 2px solid {YELLOW} !important;
     background-color: transparent !important;
@@ -87,7 +91,7 @@ st.markdown(f"""
     padding-top: 24px !important;
   }}
   .stDateInput input, .stNumberInput input, .stTextInput input, .stSelectbox div {{
-    background-color: {CARD} !important;   #all input components
+    background-color: {CARD} !important;
     color: {WHITE} !important;
     border: 1px solid {BORDER} !important;
     border-radius: 2px !important;
@@ -108,20 +112,20 @@ st.markdown(f"""
     background-color: {YELLOW} !important;
     color: {BLACK} !important;
   }}
-  .stRadio label, .stRadio div {{   #radio buttons
+  .stRadio label, .stRadio div {{
     font-family: {FONT} !important;
     color: {MUTED} !important;
     font-size: 11px !important;
     letter-spacing: 2px !important;
   }}
-  .stAlert, .stSuccess, .stInfo {{   #message styles
+  .stAlert, .stSuccess, .stInfo {{
     background-color: {CARD} !important;
     border-left: 3px solid {YELLOW} !important;
     font-family: {FONT} !important;
     color: {WHITE} !important;
   }}
   #MainMenu, footer, header {{ visibility: hidden; }}
-  .block-container {{ padding: 2rem 2.5rem !important; }}  #page spacing 
+  .block-container {{ padding: 2rem 2.5rem !important; }}
   ::-webkit-scrollbar {{ width: 4px; background: {DARK}; }}
   ::-webkit-scrollbar-thumb {{ background: {BORDER}; }}
 </style>

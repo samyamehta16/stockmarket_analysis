@@ -1,0 +1,10 @@
+pandas
+numpy
+pandas-datareader
+python-dotenv
+
+scikit-learn
+prophet
+
+streamlit
+plotly
