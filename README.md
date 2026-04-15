@@ -43,6 +43,8 @@ This project collects historical S&P 500 data from FRED (Federal Reserve Economi
   * Confidence intervals
   * Feature importance
 * Run: `python scripts/model.py`
+  
+<img width="1619" height="445" alt="image" src="https://github.com/user-attachments/assets/de825e8b-f637-401f-8f81-d16e5b2fad45" />
 
 ---
 
