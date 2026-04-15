@@ -1,10 +1,4 @@
-# =============================================================================
-# 02_preprocessing.R
-# Stock Market Analysis & Forecasting
-# Step 2: Data Preprocessing & Feature Engineering
-# =============================================================================
-# install.packages(c("dplyr", "lubridate", "zoo"))
-# =============================================================================
+
 
 library(dplyr)
 library(lubridate)

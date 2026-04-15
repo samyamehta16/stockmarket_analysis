@@ -1,12 +1,3 @@
-# =============================================================================
-# Stock Market Analysis & Forecasting
-# Script: EDA Visualizations (Step 3)
-# Description: Generates 7 analytical charts from processed S&P 500 data
-# Usage: python eda_visualizations.py
-# Requires: data/sp500_processed.csv (run earlier fetch/processing scripts first)
-# =============================================================================
-
-# --- Install dependencies (run once in terminal) ---
 # pip install pandas matplotlib seaborn scipy numpy
 
 import os
@@ -24,19 +15,13 @@ warnings.filterwarnings("ignore")
 # Create output folder for plots
 os.makedirs("plots", exist_ok=True)
 
-
-# =============================================================================
-# CONFIGURATION — Colors & Chart Style
-# =============================================================================
-
-NAVY  = "#1A2B4A"   # titles, axes
-TEAL  = "#0E9F8E"   # primary line color
-GOLD  = "#F0B429"   # secondary / highlight
-RED   = "#EF4444"   # negative values / crisis zones
-MUTED = "#8A9BB5"   # tick labels
-BG    = "#F4F6FA"   # figure background
-WHITE = "#FFFFFF"   # axes background
-
+NAVY  = "#1A2B4A"   
+TEAL  = "#0E9F8E"   
+GOLD  = "#F0B429"   
+RED   = "#EF4444"   
+MUTED = "#8A9BB5"   
+BG    = "#F4F6FA"   
+WHITE = "#FFFFFF"   
 plt.rcParams.update({
     "figure.facecolor"  : BG,
     "axes.facecolor"    : WHITE,
@@ -55,9 +40,7 @@ plt.rcParams.update({
 })
 
 
-# =============================================================================
-# HELPER — Save chart to /plots folder
-# =============================================================================
+#saving charts to plot folder
 
 def save(filename):
     plt.savefig(f"plots/{filename}", dpi=150, bbox_inches="tight", facecolor=BG)
@@ -65,20 +48,15 @@ def save(filename):
     print(f"  Saved → plots/{filename}")
 
 
-# =============================================================================
-# LOAD DATA
-# =============================================================================
+
+# LOADING DATA
 
 print("Loading processed data...")
 df = pd.read_csv("data/sp500_processed.csv", parse_dates=["date"])
 df = df.sort_values("date").reset_index(drop=True)
 print(f"Rows: {len(df)}  |  Range: {df['date'].min().date()} → {df['date'].max().date()}")
 
-
-# =============================================================================
-# PLOT 1 — Long-Term Price Trend with Moving Averages
-# =============================================================================
-
+#plots
 print("\nPlot 1: Price trend with moving averages...")
 
 fig, ax = plt.subplots(figsize=(14, 5))
@@ -97,10 +75,7 @@ ax.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 save("01_price_trend.png")
 
-
-# =============================================================================
-# PLOT 2 — Daily Returns Distribution
-# =============================================================================
+#plot -2 
 
 print("Plot 2: Daily returns distribution...")
 
@@ -127,11 +102,7 @@ ax.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 save("02_return_distribution.png")
 
-
-# =============================================================================
-# PLOT 3 — Rolling Volatility with Crisis Period Annotations
-# =============================================================================
-
+# PLOT 3 
 print("Plot 3: Rolling volatility with crisis annotations...")
 
 vol = df.dropna(subset=["volatility_30"])
@@ -166,9 +137,7 @@ plt.tight_layout()
 save("03_volatility.png")
 
 
-# =============================================================================
-# PLOT 4 — Monthly Seasonality (Average Daily Return by Month)
-# =============================================================================
+#plot - 4
 
 print("Plot 4: Monthly seasonality...")
 
@@ -208,10 +177,7 @@ plt.tight_layout()
 save("04_seasonality.png")
 
 
-# =============================================================================
-# PLOT 5 — Annual Cumulative Returns
-# =============================================================================
-
+#plot -5 
 print("Plot 5: Annual cumulative returns...")
 
 annual = (
@@ -239,10 +205,7 @@ plt.tight_layout()
 save("05_annual_returns.png")
 
 
-# =============================================================================
-# PLOT 6 — Bollinger Bands (Last 2 Years)
-# =============================================================================
-
+#plot - 6
 print("Plot 6: Bollinger Bands...")
 
 recent = df[
@@ -269,11 +232,7 @@ ax.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 save("06_bollinger_bands.png")
 
-
-# =============================================================================
-# PLOT 7 — Feature Correlation Heatmap
-# =============================================================================
-
+#plot- 7 
 print("Plot 7: Correlation heatmap...")
 
 corr_cols = ["price", "daily_return", "volatility_30", "ma_30", "ma_200", "bb_width"]
@@ -297,10 +256,7 @@ plt.tight_layout()
 save("07_correlation_heatmap.png")
 
 
-# =============================================================================
-# EDA SUMMARY — Printed to terminal
-# =============================================================================
-
+#final summary 
 print("\n" + "=" * 50)
 print("           EDA SUMMARY")
 print("=" * 50)
