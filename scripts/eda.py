@@ -1,14 +1,3 @@
-# =============================================================================
-# Stock Market Analysis & Forecasting
-# Script: EDA Visualizations (Step 3)
-# Description: Generates 7 analytical charts from processed S&P 500 data
-# Usage: python eda_visualizations.py
-# Requires: data/sp500_processed.csv (run earlier fetch/processing scripts first)
-# =============================================================================
-
-# --- Install dependencies (run once in terminal) ---
-# pip install pandas matplotlib seaborn scipy numpy
-
 import os
 import warnings
 import numpy as np

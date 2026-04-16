@@ -4,7 +4,7 @@ library(zoo)
 
 cat("Loading raw data...\n")
 
-df <- read.csv("C:/Users/palak/OneDrive/Desktop/Stock-analysis/data/sp500_processed.csv")
+df <- read.csv("C:/Users/palak/OneDrive/Desktop/Stock-analysis/data/sp500_raw.csv")
 df$date <- as.Date(df$date)
 
 df <- df %>%
